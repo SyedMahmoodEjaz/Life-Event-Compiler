@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Life Event Compiler</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#06070d;--card:rgba(18,20,34,.62);--ink:#eef0ff;--mut:#8b90ad;--line:rgba(140,150,255,.16);--ac:#7c6cff;--ac2:#35e0ff;--g:#34f0a1;--y:#ffc857;--r:#ff5d7a;--b:#4da3ff;--n:#5b6080;--sh:0 10px 40px rgba(0,0,0,.45)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 "Inter",-apple-system,"Segoe UI",system-ui,sans-serif;overflow-x:hidden}
+#bg{position:fixed;inset:0;z-index:0;pointer-events:none}.orb{position:fixed;border-radius:50%;filter:blur(90px);opacity:.35;z-index:0;pointer-events:none;animation:dr 18s ease-in-out infinite alternate}
+.o1{width:480px;height:480px;background:#7c6cff;top:-120px;left:-100px}.o2{width:420px;height:420px;background:#35e0ff;bottom:-140px;right:-80px;animation-delay:-6s}.o3{width:300px;height:300px;background:#ff5fd2;top:45%;left:55%;opacity:.18;animation-delay:-11s}
+@keyframes dr{to{transform:translate(90px,60px) scale(1.2)}}
+.w{position:relative;z-index:1;max-width:1040px;margin:0 auto;padding:20px 18px 90px}
+h1,h2,h3{margin:0;letter-spacing:-.025em}
+nav{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:10px 14px;margin-bottom:18px;border:1px solid var(--line);border-radius:16px;background:var(--card);backdrop-filter:blur(16px);position:sticky;top:env(safe-area-inset-top,0px);z-index:5}
+nav b{margin-right:auto;font-size:13px;letter-spacing:.2em;background:linear-gradient(90deg,var(--ac2),var(--ac),#ff5fd2);-webkit-background-clip:text;background-clip:text;color:transparent;background-size:200%;animation:sh 6s linear infinite}
+@keyframes sh{to{background-position:200% 0}}
+.tb{border:0;background:none;color:var(--mut);padding:7px 13px;border-radius:10px;cursor:pointer;font:inherit;transition:.25s}.tb.on,.tb:hover{color:var(--ink);background:rgba(124,108,255,.18);box-shadow:inset 0 0 0 1px var(--line)}
+.c{position:relative;background:var(--card);backdrop-filter:blur(14px);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:var(--sh);margin-bottom:14px;animation:up .6s cubic-bezier(.2,.8,.2,1) both;transition:transform .3s,border-color .3s,box-shadow .3s}
+.grid .c:hover{transform:translateY(-4px);border-color:var(--ac2);box-shadow:0 0 0 1px var(--ac2),0 14px 50px rgba(53,224,255,.15)}
+.grid .c:nth-child(2){animation-delay:.07s}.grid .c:nth-child(3){animation-delay:.14s}.grid .c:nth-child(4){animation-delay:.21s}.grid .c:nth-child(5){animation-delay:.28s}.grid .c:nth-child(6){animation-delay:.35s}
+@keyframes up{from{opacity:0;transform:translateY(18px) scale(.98)}}
+.btn{position:relative;overflow:hidden;background:linear-gradient(120deg,var(--ac),#4d7cff 50%,var(--ac2));background-size:200%;color:#fff;border:0;border-radius:12px;padding:11px 20px;font:600 14px inherit;cursor:pointer;transition:.3s;box-shadow:0 6px 24px rgba(124,108,255,.4)}
+.btn:hover{background-position:100% 0;transform:translateY(-2px);box-shadow:0 10px 32px rgba(53,224,255,.4)}.btn.s{background:rgba(255,255,255,.04);box-shadow:none;border:1px solid var(--line);color:var(--ink)}.btn.s:hover{border-color:var(--ac2)}.btn:disabled{opacity:.5;animation:pl 1.2s infinite}
+@keyframes pl{50%{opacity:.8}}
+input,select,textarea{font:inherit;color:var(--ink);background:rgba(0,0,0,.25);border:1px solid var(--line);border-radius:11px;padding:9px 11px;width:100%;outline:0;transition:.25s}input:focus,select:focus,textarea:focus{border-color:var(--ac2);box-shadow:0 0 0 3px rgba(53,224,255,.15)}
+option{background:#12141f}
+.hero{text-align:center;padding:60px 0 28px}.hero h1{font-size:clamp(34px,7vw,64px);line-height:1.05;background:linear-gradient(90deg,#fff,var(--ac2),var(--ac),#ff5fd2,#fff);background-size:300%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:sh 8s linear infinite}
+.hero p{color:var(--mut);max-width:560px;margin:14px auto 24px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px}.chip{border:1px solid var(--line);border-radius:99px;padding:6px 14px;color:var(--mut);background:rgba(255,255,255,.03);cursor:pointer;font:inherit;font-size:13px;transition:.25s}.chip:hover{color:var(--ink);border-color:var(--ac2);transform:translateY(-2px)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}.fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+label{font-size:12px;color:var(--mut);display:block;margin-bottom:3px}.m{color:var(--mut);font-size:13px}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.st{display:inline-flex;gap:7px;align-items:center;font-size:13px}.d{width:9px;height:9px;border-radius:50%;display:inline-block;box-shadow:0 0 10px currentColor}
+.g{background:var(--g);color:var(--g)}.y{background:var(--y);color:var(--y)}.r{background:var(--r);color:var(--r)}.b{background:var(--b);color:var(--b);animation:pl 1.6s infinite}.n{background:var(--n);color:var(--n);box-shadow:none}
+.warn{border:1px solid rgba(255,200,87,.35);padding:10px 14px;background:rgba(255,200,87,.07);border-radius:12px;font-size:13px;margin:10px 0}
+.bar{height:8px;border-radius:9px;background:rgba(255,255,255,.07);overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--ac),var(--ac2));box-shadow:0 0 14px var(--ac2);transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.t{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--line);align-items:flex-start}.t:first-child{border:0}.t>div{flex:1}
+.pipe{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}.pipe span{font-size:12px;padding:5px 12px;border-radius:99px;border:1px solid var(--line);color:var(--mut);transition:.3s}.pipe span.on{color:var(--ink);border-color:var(--ac2);box-shadow:0 0 16px rgba(53,224,255,.4);animation:pl 1s infinite}.pipe span.ok{color:var(--g);border-color:var(--g)}
+.msg{padding:10px 14px;border-radius:14px;margin:7px 0;max-width:88%;white-space:pre-wrap;animation:up .4s both;word-break:break-word}.msg.u{background:linear-gradient(120deg,var(--ac),#4d7cff);margin-left:auto}.msg.a{background:rgba(255,255,255,.05);border:1px solid var(--line)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.two{grid-template-columns:1fr}}
+table{width:100%;border-collapse:collapse;font-size:14px;display:block;overflow-x:auto}td,th{padding:8px 8px;border-top:1px solid var(--line);text-align:left;vertical-align:top}th{color:var(--mut);font-weight:500;font-size:12px}
+a{color:var(--ac2);word-break:break-all}.tl{border-left:2px solid;border-image:linear-gradient(var(--ac2),var(--ac)) 1;margin-left:6px;padding-left:16px}.tl div{margin:12px 0}
+#boot{position:fixed;inset:0;z-index:99;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;transition:opacity .7s,transform .7s}#boot.out{opacity:0;transform:scale(1.08);pointer-events:none}
+#boot h1{font-size:15px;letter-spacing:.5em;color:var(--mut);animation:up 1s both}#bl{font:12px ui-monospace,monospace;color:var(--ac2);min-height:90px;width:260px}#bl div{animation:up .4s both}
+.pb{width:260px;height:3px;background:var(--line);border-radius:3px}.pb i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--ac),var(--ac2));box-shadow:0 0 12px var(--ac2);transition:width .5s}
+.core{position:relative;width:110px;height:110px;display:grid;place-items:center;font-size:30px;color:var(--ac2)}.core i{position:absolute;inset:0;border-radius:50%;border:2px solid transparent;border-top-color:var(--ac2);animation:sp 1.4s linear infinite}.core i:nth-child(2){inset:12px;border-top-color:var(--ac);animation-duration:2s;animation-direction:reverse}.core i:nth-child(3){inset:24px;border-top-color:#ff5fd2;animation-duration:.9s}.core b{animation:pl 1.2s infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+</style></head><body><canvas id="bg"></canvas><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+<div id="boot"><div class="core"><i></i><i></i><i></i><b>◆</b></div><h1>LIFE EVENT COMPILER</h1><div id="bl"></div><div class="pb"><i id="bp"></i></div></div><div class="w"><nav id="nav"></nav><div id="app"></div></div>
+<script>
+const $=s=>document.querySelector(s),esc=t=>String(t??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let S={view:'home',goal:'',p:null,sel:[],ws:{},cur:null,tab:'overview',busy:0,imp:null,sim:null};
+try{const x=localStorage.getItem('lec2');if(x)S=Object.assign(S,JSON.parse(x),{busy:0})}catch(e){}
+const save=()=>{try{localStorage.setItem('lec2',JSON.stringify(S))}catch(e){}};
+const api=async(m,o={})=>{const r=await fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({messages:typeof m=='string'?[{role:'user',content:m}]:m,...o})});const d=await r.json();if(!r.ok)throw new Error(d.error||'Request failed');return d};
+const ai=async(q,j)=>{const d=await api(q,{json:j});return j?d.data:d.text};
+S.extra=S.extra||[];
+// Starting points only: names are real programs, but every fact must be confirmed on the official page.
+const P=[
+{id:'uva',u:'University of Amsterdam',n:'MSc Artificial Intelligence',c:'Netherlands',f:'🇳🇱',url:'https://www.uva.nl'},
+{id:'kth',u:'KTH Royal Institute of Technology',n:'MSc Machine Learning',c:'Sweden',f:'🇸🇪',url:'https://www.kth.se'},
+{id:'aalto',u:'Aalto University',n:'MSc Machine Learning, Data Science and AI',c:'Finland',f:'🇫🇮',url:'https://www.aalto.fi'},
+{id:'tum',u:'Technical University of Munich',n:'MSc Informatics',c:'Germany',f:'🇩🇪',url:'https://www.tum.de'},
+{id:'ed',u:'University of Edinburgh',n:'MSc Artificial Intelligence',c:'United Kingdom',f:'🇬🇧',url:'https://www.ed.ac.uk'},
+{id:'tor',u:'University of Toronto',n:'MScAC Applied Computing',c:'Canada',f:'🇨🇦',url:'https://www.utoronto.ca'}];
+S.extra=S.extra||[];P.push(...S.extra);
+const T=[ // id,label,deps,why
+['elig','Check eligibility on the official program page',[],'Every other step depends on the exact rules for this program.'],
+['docs','Gather transcript, degree certificate and passport',[],'Almost all universities ask for these.'],
+['cv','Update your CV',[],'Programs usually ask for a current CV.'],
+['lors','Request two recommendation letters',['elig'],'Referees need weeks, so ask early.'],
+['sop','Draft your motivation letter',['elig'],'It must fit this specific program.'],
+['ielts','Take your English test (IELTS/TOEFL)',['elig'],'Most programs need a recent score unless an exemption applies.'],
+['ires','Receive your English test result',['ielts'],'You cannot submit without the score.'],
+['apply','Submit the application',['docs','cv','lors','sop','ires'],'Needs every item above. Confirm before sending.'],
+['schol','Apply for scholarships',['apply'],'Funding deadlines can differ from admission deadlines.'],
+['dec','Wait for admission decision',['apply'],'Nothing for you to do except wait.'],
+['visa','Student visa / residence permit',['dec'],'Starts only after you are admitted.']];
+const ST={none:['n','Not started'],prog:['b','In progress'],done:['g','Complete']};
+const AGENTS=['Goal Agent','Research Agent','Matching Agent','Verification Agent','Planning Agent'];
+function eff(w,id){const t=T.find(x=>x[0]==id),s=w.t[id]||'none';if(s=='done')return'done';if(t[2].some(d=>eff(w,d)!='done'))return id=='dec'||id=='visa'?'wait':'block';return s}
+const EL={done:['g','Complete'],prog:['b','In progress'],none:['n','Not started'],block:['r','Blocked'],wait:['y','Waiting']};
+const ready=w=>Math.round(T.filter(t=>eff(w,t[0])=='done').length/T.length*100);
+const next=w=>T.find(t=>{const e=eff(w,t[0]);return(e=='none'||e=='prog')});
+function why(w,id){const t=T.find(x=>x[0]==id),m=t[2].filter(d=>eff(w,d)!='done').map(d=>T.find(x=>x[0]==d)[1].toLowerCase());return m.length?`Blocked because: ${m.join(', ')} not done yet.`:t[3]}
+function desc(id,o=new Set()){T.forEach(t=>{if(t[2].includes(id)&&!o.has(t[0])){o.add(t[0]);desc(t[0],o)}});return o}
+
+const EU=['Netherlands','Sweden','Finland','Germany','United Kingdom','France','Denmark','Norway','Ireland','Spain','Italy','Austria','Switzerland','Belgium','Poland','Estonia'];
+function fits(p){const d=(S.p.destination||'').toLowerCase();if(!d||/anywhere|unknown|any|open|global|world/.test(d))return true;if(/europe/.test(d)&&EU.includes(p.c))return true;return d.includes((p.c||'').toLowerCase())}
+async function refresh(){S.stale=0;S.extra=[];P.splice(6);R();await findMore()}
+
+const NOVEM='https://novem-mauve.vercel.app/';
+function ielts(){return`<div class="c"><h2>Prepare for IELTS with NOVEM</h2><p class="m">Practice Listening, Reading, Writing and Speaking with band-by-band feedback.</p><div class="row"><a class="btn" href="${NOVEM}" target="_blank" rel="noopener" style="text-decoration:none">Open NOVEM ↗</a><button class="btn s" onclick="S.emb=!S.emb;R()">${S.emb?'Hide':'Show'} inside this app</button></div></div>${S.emb?`<div class="c" style="padding:0;overflow:hidden"><iframe src="${NOVEM}" allow="microphone; clipboard-write" style="width:100%;height:80vh;border:0"></iframe></div><p class="m">If the box stays blank, use "Open NOVEM".</p>`:''}`}
+function match(p){const f=(S.p.field||'').toLowerCase(),e=(S.p.education||'').toLowerCase(),en=(S.p.english||'').toLowerCase(),r=[];
+r.push(/ai|artificial|computer|cs|data|software/.test(f+e)?['g','Your bachelor\'s field looks relevant']:['y','Check that your background fits']);
+r.push(['y','Mathematics / programming prerequisites: verify']);
+r.push(/not|no|haven|pending/.test(en)?['r','English test not completed']:/\d/.test(en)||/ielts|toefl/.test(en)?['g','English test on file']:['w','English status unknown']);
+r.push(['y','Deadline & tuition: not verified yet']);return r}
+const dot=c=>`<span class="d ${c=='w'?'n':c}"></span>`;
+function wsOf(id){if(!S.ws[id])S.ws[id]={status:'Shortlisted',t:{},chat:[],ver:1,log:[],info:null,notes:'',ielts:''};return S.ws[id]}
+function nav(){const v=S.view;$('#nav').innerHTML=`<b>LIFE EVENT COMPILER</b>`+[['home','Goal'],['discover','Discover'+(S.stale&&v!='discover'?' •':'')],['dash','Dashboard'],['ielts','IELTS Prep']].map(([k,l])=>`<button class="tb ${v==k?'on':''}" onclick="go('${k}')">${l}</button>`).join('')+`<button class="tb" onclick="if(confirm('Reset everything?')){localStorage.removeItem('lec2');location.reload()}">Reset</button>`}
+function go(v){S.view=v;R()}
+function R(){nav();const v=S.view;$('#app').innerHTML=v=='home'?home():v=='discover'?disc():v=='dash'?dash():v=='ielts'?ielts():wsv();save()}
+// HOME
+const EX={'Study abroad':'I want to do a Master\'s in Artificial Intelligence abroad in 2027. I have a BS in AI, I\'m from Pakistan, my budget is limited, I need scholarships, and I haven\'t taken IELTS yet.','Start a business':'I want to start a small software business next year.','Move abroad':'I want to move to Canada within two years.','Find an international job':'I want a software job in Europe.'};
+function home(){return`<div class="hero"><h1>What do you want to achieve?</h1><p>Tell us your goal in your own words. We'll turn it into a personalized, executable plan.</p></div>
+<div class="c"><textarea id="g" rows="4" placeholder="I want to do a Master's in AI abroad in 2027, preferably with a scholarship.">${esc(S.goal)}</textarea>
+<div class="row" style="margin-top:12px"><button class="btn" id="cb" onclick="compile()">COMPILE MY GOAL</button><span class="m">Turn a goal into a plan. Turn the plan into action.</span></div>
+<div class="chips">${Object.keys(EX).map(k=>`<button class="chip" onclick="ex('${k}')">${k}</button>`).join('')}</div><div id="pp"></div></div>
+<div class="m" style="text-align:center">Study Abroad is fully built in this version. Other goal types are planned.</div>`}
+function ex(k){$('#g').value=EX[k];if(k!='Study abroad')alert('Only Study Abroad is built so far. Try it with the example.')}
+function pipe(i){$('#pp').innerHTML='<div class="pipe">'+AGENTS.map((a,j)=>`<span class="${j<i?'ok':j==i?'on':''}">${j<i?'✓ ':''}${a}</span>`).join('')+'</div>'}
+async function compile(){S.goal=$('#g').value.trim();if(!S.goal)return;$('#cb').disabled=true;pipe(0);let p;
+try{p=await ai(`Extract a study-abroad goal as JSON with string keys: degree, field, destination, intake, education, origin, budget, funding, english. Use "Unknown" when not stated. english should say "Not completed" if the person hasn't taken a test. Goal: ${S.goal}`,1);if(!p)throw 0}catch(e){p={degree:/phd/i.test(S.goal)?'PhD':'Master\'s',field:/ai|artificial/i.test(S.goal)?'Artificial Intelligence':'Computer Science',destination:/europe/i.test(S.goal)?'Europe':'Anywhere',intake:(S.goal.match(/20\d\d/)||['Unknown'])[0],education:/bs|bachelor/i.test(S.goal)?'Bachelor\'s':'Unknown',origin:/pakistan/i.test(S.goal)?'Pakistan':'Unknown',budget:/limited|low/i.test(S.goal)?'Limited':'Unknown',funding:/scholar/i.test(S.goal)?'Scholarship needed':'Unknown',english:/haven.?t|not/i.test(S.goal)?'Not completed':'Unknown'}}
+S.p=Object.assign({cgpa:''},p);for(let i=1;i<AGENTS.length;i++){pipe(i);await new Promise(r=>setTimeout(r,450))}S.view='discover';R()}
+// DISCOVER
+const PF=[['degree','Degree'],['field','Field'],['destination','Destination'],['intake','Target intake'],['education','Current education'],['origin','Nationality'],['budget','Budget'],['funding','Funding'],['english','English test'],['cgpa','CGPA (optional, improves matching)']];
+function disc(){if(!S.p)return'<div class="c">Start by entering a goal first.</div>';
+return`<div class="c"><h2>Your goal</h2><p class="m">${esc(S.goal)}</p><div class="fg">${PF.map(([k,l])=>`<div><label>${l}</label><input value="${esc(S.p[k])}" onchange="S.p['${k}']=this.value;S.stale=1;R()"></div>`).join('')}</div></div>
+<div class="row" style="margin:6px 0 12px"><h2 style="flex:1">Programs to consider</h2><button class="btn s" id="fb" onclick="findMore()">Find more (live web search)</button><button class="btn s" onclick="go('dash')">Dashboard</button><button class="btn" onclick="openSel()">Open workspaces for selected (${S.sel.length})</button></div>
+${S.stale?`<div class="warn" style="border-color:var(--ac2)">✨ You changed your details. <button class="btn" onclick="refresh()">Update suggestions</button></div>`:''}<div class="m">Showing ${P.filter(fits).length} of ${P.length} programs for "${esc(S.p.destination)}". <a href="#" onclick="S.all=!S.all;R();return false">${S.all?'Only matching':'Show all'}</a></div>
+<div class="warn">These are starting points. Deadlines, tuition and requirements come from the list below. Press <b>Research</b> inside a workspace to check each program against live official pages.</div>
+<div class="grid">${P.filter(p=>fits(p)||S.all).map(p=>`<div class="c"><label class="row"><input type="checkbox" style="width:auto" ${S.sel.includes(p.id)?'checked':''} onchange="tog('${p.id}')"> <b>🎓 ${esc(p.n)}</b></label><div class="m">${esc(p.u)} · ${p.f} ${p.c}</div><div style="margin-top:8px">${match(p).map(m=>`<div class="st">${dot(m[0])}${m[1]}</div>`).join('<br>')}</div><div class="row" style="margin-top:12px"><button class="btn s" onclick="openWs('${p.id}')">Open workspace</button><a class="m" href="${p.url}" target="_blank" rel="noopener">Official site</a></div></div>`).join('')}</div>${S.sel.length>1?cmp():''}`}
+function tog(id){S.sel=S.sel.includes(id)?S.sel.filter(x=>x!=id):[...S.sel,id];R()}
+function cmp(){const l=P.filter(p=>S.sel.includes(p.id));return`<div class="c" style="margin-top:14px"><h3>Side by side</h3><p class="m">For understanding differences, not ranking.</p><table><tr><th></th>${l.map(p=>`<th>${esc(p.u)}</th>`).join('')}</tr><tr><td>Program</td>${l.map(p=>`<td>${esc(p.n)}</td>`).join('')}</tr><tr><td>Country</td>${l.map(p=>`<td>${p.c}</td>`).join('')}</tr><tr><td>Deadline / intake / tuition</td>${l.map(p=>{const i=S.ws[p.id]&&S.ws[p.id].info;return`<td>${i?esc(i.deadline)+' / '+esc(i.start)+' / '+esc(i.tuition):'Research first'}</td>`}).join('')}</tr><tr><td>Readiness</td>${l.map(p=>`<td>${S.ws[p.id]?ready(S.ws[p.id])+'%':'—'}</td>`).join('')}</tr></table></div>`}
+function openSel(){S.sel.forEach(wsOf);if(S.sel.length)openWs(S.sel[0]);else alert('Select at least one program.')}
+function openWs(id){wsOf(id);if(!S.sel.includes(id))S.sel.push(id);S.cur=id;S.tab='overview';S.view='ws';S.imp=null;S.sim=null;R()}
+// DASHBOARD
+const STAT=['Researching','Shortlisted','Preparing','Ready to apply','Submitted','Waiting for decision','Accepted','Rejected','Withdrawn'];
+function dash(){const ids=Object.keys(S.ws);if(!ids.length)return'<div class="c"><h2>No applications yet</h2><p class="m">Open a workspace from Discover.</p><button class="btn" onclick="go(\'discover\')">Discover programs</button></div>';
+return`<h2 style="margin-bottom:12px">My education journey</h2><p class="m">${esc(S.p?.degree)} · ${esc(S.p?.field)} · ${esc(S.p?.intake)}</p><div class="grid">${ids.map(id=>{const p=P.find(x=>x.id==id),w=S.ws[id],n=next(w);return`<div class="c"><b>${esc(p.u)}</b><div class="m">${esc(p.n)}</div><div class="row" style="margin:10px 0"><div class="bar" style="flex:1"><i style="width:${ready(w)}%"></i></div><b>${ready(w)}%</b></div><div class="m">Plan v${w.ver} · Next: ${n?esc(n[1]):'All done'}</div><div class="row" style="margin-top:10px"><select style="width:auto" onchange="S.ws['${id}'].status=this.value;save()">${STAT.map(s=>`<option ${s==w.status?'selected':''}>${s}</option>`).join('')}</select><button class="btn s" onclick="openWs('${id}')">Open</button></div></div>`}).join('')}</div>`}
+// WORKSPACE
+const TABS=[['overview','Overview'],['program','Program & sources'],['workflow','Workflow'],['chat','Chat'],['change','Change & What-If']];
+function wsv(){const p=P.find(x=>x.id==S.cur),w=S.ws[S.cur];if(!p)return home();
+return`<div class="row"><button class="btn s" onclick="go('dash')">←</button><div style="flex:1"><h2>${p.f} ${esc(p.n)}</h2><div class="m">${esc(p.u)} · ${p.c} · Plan v${w.ver}</div></div></div>
+<div class="row" style="margin:12px 0">${S.sel.map(id=>`<button class="chip" style="${id==S.cur?'border-color:var(--ac);color:var(--ink)':''}" onclick="openWs('${id}')">${esc(P.find(x=>x.id==id).u.split(' ').slice(0,2).join(' '))}</button>`).join('')}</div>
+<div class="row" style="margin-bottom:12px">${TABS.map(([k,l])=>`<button class="tb ${S.tab==k?'on':''}" onclick="S.tab='${k}';R()">${l}</button>`).join('')}</div>${({overview,program,workflow,chat,change})[S.tab](p,w)}`}
+function overview(p,w){const n=next(w),rows=[['Relevant bachelor\'s',match(p)[0][0]=='g'?'g':'y'],['Transcript & passport',w.t.docs=='done'?'g':'y'],['CV',w.t.cv=='done'?'g':'y'],['English test',w.t.ires=='done'?'g':'r'],['Recommendation letters',w.t.lors=='done'?'g':'r'],['Motivation letter',w.t.sop=='done'?'g':'r'],['Mathematics prerequisite','y']];
+return`<div class="c"><h3>Where am I?</h3><div class="row" style="margin:8px 0"><div class="bar" style="flex:1"><i style="width:${ready(w)}%"></i></div><b>${ready(w)}% ready</b></div><div class="m">Status: ${w.status}</div></div>
+<div class="c"><h3>What should I do next?</h3>${n?`<p><b>${esc(n[1])}</b></p><p class="m">${esc(why(w,n[0]))}</p>`:'<p>Everything is done.</p>'}</div>
+<div class="c"><h3>Your application gap</h3><table>${rows.map(r=>`<tr><td>${r[0]}</td><td>${dot(r[1])} ${{g:'Looks satisfied',y:'Needs verification',r:'Missing'}[r[1]]}</td></tr>`).join('')}</table><p class="m">Based on typical requirements. Confirm against the official page in "Program & sources".</p></div>
+<div class="c"><h3>Notes</h3><textarea rows="3" onchange="S.ws['${p.id}'].notes=this.value;save()">${esc(w.notes)}</textarea></div>`}
+function program(p,w){const i=w.info;
+return`<div class="c"><h3>Official source</h3><p><a href="${p.url}" target="_blank" rel="noopener">${esc(p.u)} website</a> <span class="m">· find this exact program page, then confirm every fact below.</span></p>
+<button class="btn" id="rb" onclick="research()">${i?'Re-research':'Research this program'}</button><span class="m" id="rs"></span></div>
+${i?`<div class="warn">✅ Researched live on ${esc(i.when)} using web search. The pages it used are listed under Sources at the bottom.</div>
+<div class="c"><h3>Program profile</h3><table>${[['Duration',i.duration],['Language',i.language],['Academic requirements',i.academic],['English requirement',i.english],['Documents',i.documents],['Tuition',i.tuition],['Scholarships',i.scholarships]].map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1])}</td></tr>`).join('')}</table></div>
+<div class="c"><h3>Timeline</h3><p class="m">Application deadline is not the same as the day classes begin.</p><div class="tl"><div><b>Application deadline:</b> ${esc(i.deadline)}</div><div><b>Decision:</b> after review, date not verified</div><div><b>Visa / residence:</b> start after admission</div><div><b>🎓 Classes begin:</b> ${esc(i.start)}</div></div></div>
+<div class="c"><h3>🛂 After graduation</h3><p>${esc(i.postStudy)}</p><p class="m">This is set by ${p.c}'s government, not the university. Studying here does not give an automatic right to stay. Check the official immigration website. Checked ${esc(i.when)}.</p></div><div class="c"><h3>Sources</h3>${(i.sources||[]).map(u=>'<div><a href="'+esc(u)+'" target="_blank" rel="noopener">'+esc(u)+'</a></div>').join('')||'<span class="m">No sources returned.</span>'}</div>`:'<div class="c m">Nothing researched yet.</div>'}`}
+async function research(){const p=P.find(x=>x.id==S.cur),w=S.ws[S.cur];$('#rb').disabled=true;$('#rs').textContent=' Searching official sources…';
+try{const d=await api([{role:'user',content:`Research "${p.n}" at ${p.u} (${p.c}) for a student from ${S.p.origin} targeting ${S.p.intake}. Use web search. Prefer the university's official program page, official admissions pages and official government immigration sites. Return ONLY JSON with string keys: duration, language, academic, english, documents, tuition, scholarships, deadline, start, postStudy. Give exact dates, scores and amounts as found, noting the intake they belong to. If something cannot be found on official pages, write "Not found on official pages".`}],{search:1,json:1});
+const r=d.data||{};r.sources=d.sources;r.when=new Date().toDateString();w.info=r}catch(e){alert(e.message)}R()}
+async function findMore(){$('#fb').disabled=true;$('#fb').textContent='Searching the web…';try{const d=await api(`Using web search, find 5 real master's programs worldwide that fit this student: ${JSON.stringify(S.p)}. Prefer English-taught programs, scholarships and the preferred destinations. Return ONLY a JSON array of objects with keys u (university), n (program name), c (country), f (flag emoji), url (official program page URL). Exclude: ${P.map(p=>p.n+' at '+p.u).join(', ')}`,{search:1,json:1});(Array.isArray(d.data)?d.data:[]).forEach(x=>{if(x.u&&x.n){const o={u:x.u,n:x.n,c:x.c||'',f:x.f||'🌍',url:x.url||'#',id:'x'+Math.random().toString(36).slice(2,7)};P.push(o);S.extra.push(o)}})}catch(e){alert(e.message)}R()}
+function workflow(p,w){return`<div class="c"><h3>Your workflow (v${w.ver})</h3><p class="m">Each step unlocks when what it needs is done.</p>${T.map(t=>{const e=eff(w,t[0]),[c,l]=EL[e];return`<div class="t"><span class="d ${c}" style="margin-top:7px"></span><div><b>${t[1]}</b>${t[0]=='ielts'?`<div><a href="${NOVEM}" target="_blank" rel="noopener">Practice with NOVEM ↗</a></div>`:''}<div class="m">${esc(why(w,t[0]))}</div>${t[0]=='ielts'&&w.ielts?`<div class="m">Planned: ${esc(w.ielts)}</div>`:''}</div><span class="m">${l}</span>${e=='block'||e=='wait'?'':`<button class="btn s" onclick="cyc('${t[0]}')">Update</button>`}</div>`}).join('')}</div>${w.log.length?`<div class="c"><h3>Plan history</h3>${w.log.map(x=>`<div class="m">• ${esc(x)}</div>`).join('')}</div>`:''}`}
+function cyc(id){const w=S.ws[S.cur],o=['none','prog','done'];w.t[id]=o[(o.indexOf(w.t[id]||'none')+1)%3];R()}
+// CHAT
+function ctx(p,w){return`Student profile: ${JSON.stringify(S.p)}. Program: ${p.n}, ${p.u}, ${p.c}. Plan v${w.ver}. Task states: ${T.map(t=>t[1]+'='+eff(w,t[0])).join('; ')}. Planned English test date: ${w.ielts||'not set'}. Researched info (AI draft, may be unverified): ${w.info?JSON.stringify(w.info):'none yet'}. Notes: ${w.notes}`}
+function chat(p,w){return`<div class="c"><div id="cm">${w.chat.length?w.chat.map(m=>`<div class="msg ${m.r}">${esc(m.c)}</div>`).join(''):'<p class="m">Ask anything, for example "What do I need to do next?" or "What am I missing?" This workspace already knows your profile and this program.</p>'}</div><div class="row" style="margin-top:10px"><input id="ci" placeholder="Message about this application…" onkeydown="if(event.key=='Enter')send()" style="flex:1"><button class="btn" onclick="send()">Send</button></div></div>`}
+async function send(){const el=$('#ci'),q=el.value.trim();if(!q)return;const w=S.ws[S.cur],p=P.find(x=>x.id==S.cur);w.chat.push({r:'u',c:q});const a={r:'a',c:'…'};w.chat.push(a);el.value='';R();
+const turns=[{role:'user',content:`SYSTEM CONTEXT (do not repeat): ${ctx(p,w)}\nRules: be concise and friendly, never guarantee admission, scholarships or visas, never invent deadlines or requirements, say when something must be verified on the official site, finish with the next action.\n\nFirst question: ${w.chat[0].c}`}];
+w.chat.slice(1,-1).forEach(m=>turns.push({role:m.r=='u'?'user':'assistant',content:m.c}));
+try{const r=await api(turns,{search:1});a.c=r.text+(r.sources.length?'\n\nSources:\n'+r.sources.slice(0,4).join('\n'):'')}catch(e){a.c=e.message||'Chat is unavailable here.'}save();R()}
+// CHANGE + WHAT-IF
+function change(p,w){const im=S.imp,sm=S.sim;
+return`<div class="c"><h3>Something changed?</h3><p class="m">Tell us when you can take your English test. We'll show what moves before changing anything.</p><div class="row"><input id="im" placeholder="e.g. January 2027" value="${esc(w.ielts)}" style="flex:1"><button class="btn s" onclick="detect()">Check impact</button></div>
+${im?`<div class="warn"><b>⚠️ Plan change detected</b><br>English test moved to ${esc(im.v)}. This affects ${im.ids.length} tasks in this application:<br>${im.ids.map(i=>'• '+T.find(t=>t[0]==i)[1]).join('<br>')}<br>The application cannot be submitted until the result is in, so check that the deadline still works. Consider later intakes or programs with later deadlines.</div><div class="row"><button class="btn" onclick="recompile()">RECOMPILE WORKFLOW</button><button class="btn s" onclick="S.imp=null;R()">Keep current plan</button></div>`:''}</div>
+<div class="c"><h3>What if?</h3><p class="m">Test a scenario. Your current plan stays untouched.</p><div class="row"><input id="wi" placeholder="What if I change my target intake to September 2028?" style="flex:1"><button class="btn" id="wb" onclick="whatif()">Simulate</button></div></div>
+${sm?`<div class="two"><div class="c"><h3>Current plan</h3><p class="m">v${w.ver} · ${ready(w)}% ready</p><p>Next: ${next(w)?esc(next(w)[1]):'done'}</p></div><div class="c"><h3>Scenario: ${esc(sm.q)}</h3><p>${esc(sm.summary)}</p><div class="m"><b>Affected:</b> ${esc([].concat(sm.affected||[]).join('; '))}</div><div class="m"><b>New steps:</b> ${esc([].concat(sm.newSteps||[]).join('; '))}</div><div class="m"><b>Alternatives:</b> ${esc([].concat(sm.alternatives||[]).join('; '))}</div></div></div><div class="m">AI-generated scenario. Not applied to your plan.</div>`:''}`}
+function detect(){const v=$('#im').value.trim();if(!v)return;S.imp={v,ids:['ielts',...desc('ielts')]};R()}
+function recompile(){const w=S.ws[S.cur],im=S.imp;w.ielts=im.v;im.ids.forEach(i=>{if(w.t[i]=='done')w.t[i]='none'});w.ver++;w.log.push(`v${w.ver}: English test moved to ${im.v}. ${im.ids.length} tasks re-sequenced. Submission now waits for the result.`);S.imp=null;S.tab='workflow';R()}
+async function whatif(){const q=$('#wi').value.trim();if(!q)return;const p=P.find(x=>x.id==S.cur),w=S.ws[S.cur];$('#wb').disabled=true;
+try{const r=await ai(`Study-abroad scenario. ${ctx(p,w)}\nScenario: "${q}". Return JSON: summary (2 sentences, plain language), affected (array of short strings), newSteps (array), alternatives (array). Don't guarantee anything or invent dates; say what must be verified.`,1);r.q=q;S.sim=r}catch(e){alert(e.message||'Simulation failed')}R()}
+(function(){const L=['Reading your goal…','Waking up 5 agents…','Connecting to live web search…','Loading dependency engine…','Ready.'],bl=$('#bl'),bp=$('#bp');L.forEach((t,i)=>setTimeout(()=>{bl.innerHTML+=`<div>› ${t}</div>`;bp.style.width=(i+1)/L.length*100+'%'},300+i*480));setTimeout(()=>{$('#boot').classList.add('out');setTimeout(()=>$('#boot').remove(),800)},300+L.length*480+300)})();
+(function(){const c=$('#bg'),x=c.getContext('2d');let W,H,N=[];const rs=()=>{W=c.width=innerWidth;H=c.height=innerHeight;N=Array.from({length:Math.min(70,W/18|0)},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35}))};rs();addEventListener('resize',rs);(function t(){x.clearRect(0,0,W,H);N.forEach(a=>{a.x=(a.x+a.vx+W)%W;a.y=(a.y+a.vy+H)%H;x.fillStyle='rgba(124,108,255,.8)';x.fillRect(a.x,a.y,2,2);N.forEach(b=>{const d=Math.hypot(a.x-b.x,a.y-b.y);if(d<130){x.strokeStyle=`rgba(53,224,255,${.12*(1-d/130)})`;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}})});requestAnimationFrame(t)})()})();
+R();
+</script></body></html>
