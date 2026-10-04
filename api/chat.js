@@ -7,17 +7,21 @@ export default async function handler(req, res) {
     if (process.env.GROQ_API_KEY) {
       const SEARCH_MODEL = process.env.MODEL || 'groq/compound';
       const FAST_MODEL = process.env.FAST_MODEL || 'llama-3.3-70b-versatile';
-      const model = search ? SEARCH_MODEL : FAST_MODEL;
-      const r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'content-type': 'application/json', authorization: 'Bearer ' + process.env.GROQ_API_KEY },
-        body: JSON.stringify({
-          model,
-          messages: [...(system ? [{ role: 'system', content: system }] : []), ...messages],
-          ...(search && model.startsWith('openai/gpt-oss') ? { tools: [{ type: 'browser_search' }] } : {})
-        })
+      const models = search ? [SEARCH_MODEL, ...(process.env.FALLBACK_MODEL ? [process.env.FALLBACK_MODEL] : [])] : [FAST_MODEL];
+let r, d;
+for (const model of models) {
+  r = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', authorization: 'Bearer ' + process.env.GROQ_API_KEY },
+    body: JSON.stringify({
+      model,
+      messages: [...(system ? [{ role: 'system', content: system }] : []), ...messages],
+      ...(search && model.startsWith('openai/gpt-oss') ? { tools: [{ type: 'browser_search' }] } : {})
+      })
       });
-      const d = await r.json();
+      d = await r.json();
+      if (r.ok || r.status !== 429) break;
+      }
       if (!r.ok) throw new Error(d.error?.message || r.status);
       const m = d.choices[0].message; text = m.content || '';
       (m.executed_tools || []).forEach(t => (t.search_results?.results || []).forEach(x => x.url && src.add(x.url)));
